@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{% load leaflet_tags %}
+<head>
+    {% leaflet_js %}
+    {% leaflet_css %}
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #gis {
+            width: 80%; height: 700px}
+    </style>
+    <script type="application/javascript" src="{% static 'dist/leaflet.ajax.js' %}"></script>
+</head>
+<body>
+    <b>We are heroes!</b>
+    <br />
+    <script type="text/javascript">
+        function obj_layer(map, options) {
+            var datasets = new L.GeoJSON.AJAX(
+                "{% url 'objects' %}",{}
+            )
+
+{#            alert(JSON.stringify(datasets))#}
+
+            datasets.addTo(map)
+
+
+
+
+{#            for (g_obj in datasets['features']){#}
+{#                alert(g_obj['geometry']['coordinates'])#}
+{#                L.circle(g_obj['geometry']['coordinates'], {radius: 20000}).addTo(map);#}
+{#            }#}
+
+        }
+    </script>
+
+    {% leaflet_map "gis" callback="window.obj_layer" %}
+</body>
+</html>

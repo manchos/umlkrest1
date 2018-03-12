@@ -1,0 +1,7 @@
+.direnv/
+.envrc
+.idea/
+venv/
+/static/
+manage.py
+*.pyc
