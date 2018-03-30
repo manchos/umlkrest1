@@ -3,5 +3,7 @@
 .idea/
 venv/
 /static/
+_cache/
+data/
 manage.py
 *.pyc

@@ -17,26 +17,64 @@
     <b>We are heroes!</b>
     <br />
     <script type="text/javascript">
+
         function obj_layer(map, options) {
-            var datasets = new L.GeoJSON.AJAX(
-                "{% url 'objects' %}",{}
+
+            var dataurl = "{% url 'objects' %}";
+
+{#            $.getJSON(dataurl, function (data) {#}
+{#                // Add GeoJSON layer#}
+{#                L.geoJson(data).addTo(map);#}
+{#            });#}
+
+            var coors = 'ee'
+
+            var datasets = new L.geoJson.ajax(
+                "{% url 'objects' %}", {
+                    middleware: function (data) {
+                        coors = (data.features[0].geometry.coordinates);
+                        var circle1 = new L.circle(coors, {radius: 20000});
+                        circle1.addTo(map);
+                        alert(coors);
+
+                        return data;
+                    }
+                }
+
             )
 
-{#            alert(JSON.stringify(datasets))#}
-
-            datasets.addTo(map)
 
 
+            datasets.addTo(map);
+{#            L.circle(coors, {radius: 2000}).addTo(map);#}
 
+{#            var circle1 = new L.circle([37.57,55.76], {radius: 20000});#}
+{#            circle1.addTo(map);#}
 
 {#            for (g_obj in datasets['features']){#}
 {#                alert(g_obj['geometry']['coordinates'])#}
 {#                L.circle(g_obj['geometry']['coordinates'], {radius: 20000}).addTo(map);#}
 {#            }#}
+            var drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
 
+        map.on('layeradd', function (e) {
+{#            drawnItems.addLayer(e.layer);#}
+            alert(JSON.stringify(e.layer.toGeoJSON()));
+        });
+
+        var circle = L.circle([coors], 5000, {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5
+        }).addTo(map);
         }
+
+
+
     </script>
 
     {% leaflet_map "gis" callback="window.obj_layer" %}
+
 </body>
 </html>
