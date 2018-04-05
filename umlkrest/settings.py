@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'geobjects',
     'rd90',
+    'weather',
+    'weather.dovsoa',
 ]
 
 MIDDLEWARE = [

@@ -18,6 +18,19 @@ class HazardousChemical(models.Model):
     k7_2_f = models.CharField(max_length=255, null=True, blank=True)
     # descr = models.TextField(null=True, blank=True)
 
+
+    def get_k1(self, hc_storage):
+        # hcs - hazardous chemical substance
+        # hcs_storage - 'gas_under_pressure' || 'no_pressure'
+        # К1 - коэффициент, зависящий от условий хранения АХОВ, для сжатых газов К1 = 1
+        # Значения К1 для изотермического хранения аммиака приведено для случая разлива (выброса) в поддон.
+        # для сжатых газов К1 = 1
+        if hc_storage == 'gas_under_pressure':
+            k1 = 1
+        else:
+            k1 = self.k1
+        return k1
+
     class Meta:
         db_table = 'HazardousChemicals'
         verbose_name = 'Коэффициеты'

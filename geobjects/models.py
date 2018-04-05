@@ -3,8 +3,8 @@ from django.contrib.gis.db import models as gismodels
 # from django.contrib.gis.geos import Pod
 from django.contrib.gis.geos import GEOSGeometry
 import geocoder
+from hazard_substance.models import HazardousChemical
 from .utils import get_moscow_district, get_district_short_name, set_request_cache, ChoiceEnum
-import requests_cache
 from model_utils import Choices
 
 
@@ -20,10 +20,6 @@ class Flood(gismodels.Model):
         return self.river
 
 
-
-
-
-
 class ObjectType(models.Model):
     name = models.CharField(max_length=200)
     descr = models.TextField(max_length=500, blank=True, default='')
@@ -36,10 +32,15 @@ class ObjectType(models.Model):
         verbose_name = 'Тип объектов'
         verbose_name_plural = 'Типы объектов'
 
+
 class Object(gismodels.Model):
     name = models.CharField(max_length=300, verbose_name='Объект')
     address = models.CharField(max_length=400, verbose_name='Адрес')
-    location = gismodels.PointField(srid=4326, null=True, blank=True, verbose_name='Координаты')
+    location = gismodels.PointField(
+        srid=4326,
+        null=True,
+        blank=True,
+        verbose_name='Координаты (вычисляются)')
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     contacts = models.TextField(max_length=600, blank=True, default='', verbose_name='Контактные данные')
@@ -110,6 +111,7 @@ class Object(gismodels.Model):
         verbose_name='Тип объекта',
     )
 
+
     def __str__(self):
         return self.name
 
@@ -160,11 +162,90 @@ class Feature(models.Model):
         verbose_name_plural = 'Свойства объекта'
 
 
+class SubstanceAmount(models.Model):
+
+    hazard_substance = models.ForeignKey(
+        HazardousChemical,
+        on_delete=models.CASCADE,
+        verbose_name='Опасное вещество на объекте',
+    )
+
+    object = models.ForeignKey(
+        Object,
+        on_delete=models.CASCADE,
+    )
+
+    FULL = 'full'
+    ONE_TANK = 'one_tank'
+
+    AMOUNT_FOR_CHOICES = (
+        (FULL, 'всех емкостей'),
+        (ONE_TANK, 'одной емкости'),
+    )
+
+    amount_for = models.CharField(
+        max_length=20,
+        blank=True,
+        choices=AMOUNT_FOR_CHOICES,
+        verbose_name='Количество для',
+        default=FULL,
+    )
+
+    substance_amount = models.PositiveSmallIntegerField(
+        blank=True,
+        verbose_name='Количество вещества (т)',
+        default=0,
+    )
+
+    # full_substance_amount = models.IntegerField(
+    #     blank=True,
+    #     verbose_name='Общее количество вещества (т)',
+    #     default=0,
+    # )
+    #
+    # tank_substance_amount = models.IntegerField(
+    #     blank=True,
+    #     verbose_name='Количество вещества в 1 емкости (т)',
+    #     default=0,
+    # )
+
+    STORAGE_CHOICES = (
+        ('liquid', 'жидкость'),
+        ('gas_no_pressure', 'газ'),
+        ('gas_under_pressure', 'газ под давлением')
+    )
+
+    hc_storage = models.CharField(
+        max_length=20,
+        choices=STORAGE_CHOICES,
+        default='liquid',
+        verbose_name='Хранение АХОВ',
+    )
+
+    embank_height = models.FloatField(
+        blank=True,
+        verbose_name='Dысота поддона или обваловки (м)',
+        default=0,
+    )
+
+
+
+    def __str__(self):
+        return '{}: {}: количество: {} т. для {}, Способ хранения: {}'.format(
+            self.object, self.hazard_substance, self.substance_amount,  self.get_amount_for_display(), self.get_hc_storage_display())
+
+    class Meta:
+        db_table = 'substance_amounts'
+        verbose_name = 'Количество вещества'
+        verbose_name_plural = 'Количество вещества'
+
+
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 
 set_request_cache()
+
 
 
 @receiver(pre_save, sender=Object)
