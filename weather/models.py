@@ -145,10 +145,7 @@ from django.dispatch import receiver
 @receiver(pre_save, sender=Weather)
 def calc_dovsoa(sender, instance, **kwargs):
     if instance.time_of_day:
-        instance.dovsoa = get_dovsoa(
-            time_of_day=instance.time_of_day,
-            wind_speed=instance.wind_speed,
-            cloudiness=False,
-            snow=False,
-        )
+
+        instance.dovsoa = get_dovsoa(time_of_day=instance.time_of_day, wind_speed=instance.wind_speed, cloudiness=False,
+                                     snow=False)
         print('dovsoa {}'.format(instance.dovsoa))

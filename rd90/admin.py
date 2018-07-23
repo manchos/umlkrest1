@@ -1,5 +1,5 @@
 from django.contrib import admin
-from geobjects.models import Object, ObjectType, FeatureType, Feature, SubstanceAmount
+from geobjects.models import Object, ObjectType, FeatureType, Feature, SubstanceInfo
 
 # Register your models here.
 
@@ -22,6 +22,7 @@ admin.site.register(Weather)
 
 
 class Rd90CalcAdmin(admin.ModelAdmin):
+    list_display = ('chem_danger_object', 'get_chemicals', 'weather')
     # list_display = ('chem_danger_object')
     readonly_fields = (
         'evaporation_duration',

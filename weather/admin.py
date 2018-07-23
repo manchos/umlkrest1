@@ -1,3 +1,4 @@
-from django.contrib import admin
+import weather.dovsoa
 
 # Register your models here.
+

@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import JSONField
 
 # Create your models here.
 
@@ -12,24 +13,11 @@ class HazardousChemical(models.Model):
     k1 = models.FloatField(null=True, blank=True)
     k2 = models.FloatField(null=True, blank=True)
     k3 = models.FloatField(null=True, blank=True)
-    k7_1 = models.CharField(max_length=255, null=True, blank=True)
-    k7_1_f = models.CharField(max_length=255, null=True, blank=True)
-    k7_2 = models.CharField(max_length=255, null=True, blank=True)
-    k7_2_f = models.CharField(max_length=255, null=True, blank=True)
-    # descr = models.TextField(null=True, blank=True)
+    k7 = JSONField(default='[[0,0,0,0,0], [0,0,0,0,0]]')
+    descr = models.TextField(null=True, blank=True)
 
 
-    def get_k1(self, hc_storage):
-        # hcs - hazardous chemical substance
-        # hcs_storage - 'gas_under_pressure' || 'no_pressure'
-        # К1 - коэффициент, зависящий от условий хранения АХОВ, для сжатых газов К1 = 1
-        # Значения К1 для изотермического хранения аммиака приведено для случая разлива (выброса) в поддон.
-        # для сжатых газов К1 = 1
-        if hc_storage == 'gas_under_pressure':
-            k1 = 1
-        else:
-            k1 = self.k1
-        return k1
+
 
     class Meta:
         db_table = 'HazardousChemicals'

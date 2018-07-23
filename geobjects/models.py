@@ -6,7 +6,7 @@ import geocoder
 from hazard_substance.models import HazardousChemical
 from .utils import get_moscow_district, get_district_short_name, set_request_cache, ChoiceEnum
 from model_utils import Choices
-
+# from rd90.models import Rd90Calc
 
 # Create your models here.
 class Flood(gismodels.Model):
@@ -34,7 +34,7 @@ class ObjectType(models.Model):
 
 
 class Object(gismodels.Model):
-    name = models.CharField(max_length=300, verbose_name='Объект')
+    name = models.CharField(max_length=300, verbose_name='Название объекта')
     address = models.CharField(max_length=400, verbose_name='Адрес')
     location = gismodels.PointField(
         srid=4326,
@@ -162,7 +162,7 @@ class Feature(models.Model):
         verbose_name_plural = 'Свойства объекта'
 
 
-class SubstanceAmount(models.Model):
+class SubstanceInfo(models.Model):
 
     hazard_substance = models.ForeignKey(
         HazardousChemical,
@@ -174,6 +174,13 @@ class SubstanceAmount(models.Model):
         Object,
         on_delete=models.CASCADE,
     )
+
+    # rd90calc = models.ForeignKey(
+    #     Rd90Calc,
+    #     on_delete=models.,
+    # )
+
+
 
     FULL = 'full'
     ONE_TANK = 'one_tank'

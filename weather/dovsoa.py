@@ -1,14 +1,28 @@
 from astral import Astral
 from datetime import datetime, date, time, timedelta, tzinfo
 
+from collections import namedtuple
+import datetime
+
+import pytz
+
+utc=pytz.UTC
+
+from django.utils import timezone
+
+# Task.__new__.__defaults__ = (None, None, False, None)
+
 
 # нахождение времени суток
-def get_time_of_day(dt, city_name='Moscow'):
+def get_time_of_day(_datetime, city_name='Moscow'):
     a = Astral()
-    print('время аварии %s' % dt)
+    print('время аварии %s' % _datetime)
     # a.solar_depression = 'civil'
     city = a[city_name]
-    sun = city.sun(date=dt.date(), local=True)
+    _datetime = pytz.timezone(city.timezone).localize(_datetime)
+
+
+    sun = city.sun(date=_datetime.date(), local=True)
     timezone = city.timezone
     print('Timezone: %s' % timezone)
 
@@ -16,46 +30,53 @@ def get_time_of_day(dt, city_name='Moscow'):
     sunrise = sun['sunrise']
     print('sunrize {}'.format(sunrise))
 
-    # start_earth_day = datetime.combine(dt.date(), time(0, 0))
-    start_earth_day = dt.replace(hour=0, minute=0)
+    # start_earth_day = datetime.combine(_datetime.date(), time(0, 0))
+    start_earth_day = _datetime.replace(hour=0, minute=0)
 
     # print('start_earth_day %s' % start_earth_day)
     print('start_earth_day %s' % start_earth_day)
 
-    # end_earth_day = datetime.combine(dt.date(), time(23, 59))
-    end_earth_day = dt.replace(hour=23, minute=59)
+    # end_earth_day = datetime.combine(_datetime.date(), time(23, 59))
+    end_earth_day = _datetime.replace(hour=23, minute=59)
 
     # sunset = sun['sunset'].replace(tzinfo=None)
     sunset = sun['sunset']
     print('sunset {}'.format(sunset))
 
-    if dt > sunrise:
-        # if (sunrise + timedelta(hours=2)).replace(tzinfo=None) < dt < sunset:
-        if (sunrise + timedelta(hours=2)) < dt < sunset:
+    # Под термином «утро» понимается период времени в течение 2 ч после восхода солнца
+    # под термином «вечер» - в течение 2 ч после захода солнца
+    # Период от восхода до захода солнца за вычетом двух утренних часов - день, а период от захода до восхода солнца за
+    # вычетом двух вечерних часов - ночь.
+
+    if _datetime > sunrise:
+        # if (sunrise + timedelta(hours=2)).replace(tzinfo=None) < _datetime < sunset:
+        if (sunrise + timedelta(hours=2)) < _datetime < sunset:
 
             return 'day'
-        elif dt - sunrise <= timedelta(hours=2):
-            print('dt : %s' % dt)
+        elif _datetime - sunrise <= timedelta(hours=2):
+            print('_datetime : %s' % _datetime)
             print('sunrise %s' % sunrise)
-            print('dt - sunrise %s' % (dt - sunrise))
+            print('_datetime - sunrise %s' % (_datetime - sunrise))
             return 'morning'
-        elif dt - sunset <= timedelta(hours=2):
+        elif _datetime - sunset <= timedelta(hours=2):
             return 'evening'
-        # elif (sunset + timedelta(hours=2)).replace(tzinfo=None) < dt <= end_earth_day:
-        elif (sunset + timedelta(hours=2)) < dt <= end_earth_day:
+        # elif (sunset + timedelta(hours=2)).replace(tzinfo=None) < _datetime <= end_earth_day:
+        elif (sunset + timedelta(hours=2)) < _datetime <= end_earth_day:
             return 'night'
-    elif dt >= start_earth_day:
+    elif _datetime >= start_earth_day:
         return 'night'
 
 
 # Определение степени вертикальной устойчивости воздуха по прогнозу погоды
-def get_dovsoa(time_of_day, wind_speed, city_name='Moscow', cloudiness=False, snow=False):
+def get_dovsoa(time_of_day, wind_speed, cloudiness=False, snow=False):
     # cloudiness - облачность
     # snow - наличие снежного покрова
 
+    Dovsoa = namedtuple('Dovsoa', ['wind_speed', 'snow', 'cloudiness', 'night', 'morning', 'day', 'evening'])
+    
     if type(snow) != bool and type(cloudiness) != bool:
         return None
-    if time_of_day not in ['morning', 'night', 'day', 'evening']:
+    if time_of_day not in {'morning', 'night', 'day', 'evening'}:
         return None
 
     wind_speed_r = float(wind_speed)
@@ -66,36 +87,24 @@ def get_dovsoa(time_of_day, wind_speed, city_name='Moscow', cloudiness=False, sn
     elif wind_speed_r > 4:
         wind_speed = 'V>4'
 
-    dovsoa_list = [
-        {'wind_speed': 'V<2', 'snow': False, 'cloudiness': False,
-         'night': 'ин', 'morning': 'из', 'day': 'к', 'evening': 'ин'},
-        {'wind_speed': 'V<2', 'snow': True, 'cloudiness': True,
-         'night': 'из', 'morning': 'из', 'day': 'из', 'evening': 'из'},
-        {'wind_speed': 'V<2', 'snow': True, 'cloudiness': False,
-         'night': 'ин', 'morning': 'ин', 'day': 'из', 'evening': 'ин'},
-        {'wind_speed': 'V<2', 'snow': False, 'cloudiness': True,
-         'night': 'из', 'morning': 'из', 'day': 'из', 'evening': 'из'},
+    dovsoa_tuple = (
+        Dovsoa('V<2', False, False, 'ин', 'из', 'к', 'ин'),
+        Dovsoa('V<2', True, True, 'из', 'из', 'из', 'из'),
+        Dovsoa('V<2', True, False, 'ин', 'ин', 'из', 'ин'),
+        Dovsoa('V<2', False, True, 'из', 'из', 'из', 'из'),
 
-        {'wind_speed': '2<=V<=3.9', 'snow': False, 'cloudiness': False,
-         'night': 'ин', 'morning': 'из', 'day': 'из', 'evening': 'из'},
-        {'wind_speed': '2<=V<=3.9', 'snow': True, 'cloudiness': True,
-         'night': 'из', 'morning': 'из', 'day': 'из', 'evening': 'из'},
-        {'wind_speed': '2<=V<=3.9', 'snow': True, 'cloudiness': False,
-         'night': 'ин', 'morning': 'ин', 'day': 'из', 'evening': 'ин'},
-        {'wind_speed': '2<=V<=3.9', 'snow': False, 'cloudiness': True,
-         'night': 'из', 'morning': 'из', 'day': 'из', 'evening': 'из'},
+        Dovsoa('2<=V<=3.9', False, False, 'ин', 'из', 'из', 'из'),
+        Dovsoa('2<=V<=3.9', True, True, 'из', 'из', 'из', 'из'),
+        Dovsoa('2<=V<=3.9', True, False, 'ин', 'ин', 'из', 'ин'),
+        Dovsoa('2<=V<=3.9', False, True, 'из', 'из', 'из', 'из'),
 
-        {'wind_speed': 'V>4', 'snow': False, 'cloudiness': False,
-         'night': 'из', 'morning': 'из', 'day': 'из', 'evening': 'из'},
-        {'wind_speed': 'V>4', 'snow': True, 'cloudiness': True,
-         'night': 'из', 'morning': 'из', 'day': 'из', 'evening': 'из'},
-        {'wind_speed': 'V>4', 'snow': True, 'cloudiness': False,
-         'night': 'из', 'morning': 'из', 'day': 'из', 'evening': 'из'},
-        {'wind_speed': 'V>4', 'snow': False, 'cloudiness': True,
-         'night': 'из', 'morning': 'из', 'day': 'из', 'evening': 'из'},
-    ]
-    dovsoa = [x[time_of_day] for x in dovsoa_list if x['snow'] == snow and
-              x['wind_speed'] == wind_speed and x['cloudiness'] == cloudiness][0]
+        Dovsoa('V>4', False, False, 'из', 'из', 'из', 'из'),
+        Dovsoa('V>4', True, True, 'из', 'из', 'из', 'из'),
+        Dovsoa('V>4', True, False, 'из', 'из', 'из', 'из'),
+        Dovsoa('V>4', False, True, 'из', 'из', 'из', 'из'),
+    )
+    dovsoa = [d.__getattribute__(time_of_day) for d in dovsoa_tuple
+              if (d.wind_speed, d.snow, d.cloudiness) == (wind_speed, snow, cloudiness)][0]
 
     return dovsoa
 
@@ -112,16 +121,14 @@ def get_dovsoa_word(dovsoa):
 
 
 if __name__ == '__main__':
-    dovsoa = get_dovsoa(datetime.now(), 1, cloudiness=False, snow=False)
-    print('сейчас время суток: {}'.format(get_time_of_day(datetime.now())))
-    print('степени вертикальной устойчивости воздуха: {}'.format(dovsoa))
+    # dovsoa = get_dovsoa(datetime.now(), 1, cloudiness=False, snow=False)
+    # print('сейчас время суток: {}'.format(get_time_of_day(datetime.now())))
+    # print('степени вертикальной устойчивости воздуха: {}'.format(dovsoa))
 
-# Под термином «утро» понимается период времени в течение 2 ч после восхода солнца
-# под термином «вечер» - в течение 2 ч после захода солнца
-# Период от восхода до захода солнца за вычетом двух утренних часов - день, а период от захода до восхода солнца за
-# вычетом двух вечерних часов - ночь.
+    my_datetime = datetime.datetime(year=2018, month=7, day=3, hour=4, minute=50, tzinfo=utc)
+    time_of_day = get_time_of_day(my_datetime)
+
 
 # if (sun['sunrise'] < T < sun['sunset']) and (light < threshold):
 
-if __name__ == '__main__':
-    pass
+

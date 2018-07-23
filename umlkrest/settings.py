@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'geobjects',
     'rd90',
     'weather',
-    'weather.dovsoa',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -170,3 +170,12 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.logging.LoggingPanel',
     'debug_toolbar.panels.redirects.RedirectsPanel',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'api.UTF8JSONRender',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    )
+}
+
+

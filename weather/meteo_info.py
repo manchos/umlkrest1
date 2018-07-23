@@ -2,16 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 
 
-# def get_html_meteo(url):
-#     try:
-#         result = requests.get(url)
-#         result.raise_for_status()
-#         return result.text
-#     except requests.exceptions.RequestException:
-#         print('Не получилось')
-#         return False
-
-
 def get_html_meteo(url='http://old.meteoinfo.ru/pogoda/russia/moscow-area/moscow'):
     headers = {'User-agent': 'Mozilla/5.0', 'Accept-Encoding': 'gzip'}
     try:
@@ -21,7 +11,7 @@ def get_html_meteo(url='http://old.meteoinfo.ru/pogoda/russia/moscow-area/moscow
         return None
 
 
-def determine_clouding(cloud_score):
+def determine_clouding_text(cloud_score):
     '''
         Облачность выдается в баллах по 10-балльной шкале,
         0 баллов = ясно,
@@ -40,6 +30,16 @@ def determine_clouding(cloud_score):
     for clouding_text, _range in clouding_dict.items():
         if cloud_score in _range:
             return clouding_text
+
+
+def is_cloudiness(cloud_score):
+    if cloud_score is None:
+        return None
+
+    if cloud_score >= 4:
+        return True
+    else:
+        return False
 
 
 def get_meteo_info_dict(html):

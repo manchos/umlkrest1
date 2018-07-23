@@ -3,7 +3,7 @@ from leaflet.admin import LeafletGeoAdmin
 # Register your models here.
 
 
-from .models import Object, ObjectType, FeatureType, Feature, SubstanceAmount
+from .models import Object, ObjectType, FeatureType, Feature, SubstanceInfo
 
 
 class FeatureInline(admin.TabularInline):
@@ -12,14 +12,14 @@ class FeatureInline(admin.TabularInline):
 
 
 class SubstanceAmountInline(admin.TabularInline):
-    model = SubstanceAmount
+    model = SubstanceInfo
     extra = 1
 
 # admin.site.register(Object)
 admin.site.register(ObjectType)
 admin.site.register(FeatureType)
 admin.site.register(Feature)
-admin.site.register(SubstanceAmount)
+admin.site.register(SubstanceInfo)
 
 
 class ObjectAdmin(LeafletGeoAdmin):

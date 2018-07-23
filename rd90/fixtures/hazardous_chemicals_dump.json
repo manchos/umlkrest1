@@ -1,0 +1,597 @@
+[
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 1,
+  "fields": {
+    "name": "\u0410\u043a\u0440\u043e\u043b\u0435\u0438\u043d",
+    "form": "H2C",
+    "gas_density": null,
+    "liquid_density": 0.839,
+    "boiling_t": 52.7,
+    "toxodeth": 0.2,
+    "k1": 0.0,
+    "k2": 0.013,
+    "k3": 3.0,
+    "k7": "[[0.1, 0.2, 0.1, 1.0, 2.2],null]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 2,
+  "fields": {
+    "name": "\u0410\u043c\u043c\u0438\u0430\u043a \u0445\u0440\u0430\u043d\u0435\u043d\u0438\u0435 \u043f\u043e\u0434 \u0434\u0430\u0432\u043b\u0435\u043d\u0438\u0435\u043c",
+    "form": "NH3",
+    "gas_density": 0.0008,
+    "liquid_density": 0.681,
+    "boiling_t": 33.42,
+    "toxodeth": 15.0,
+    "k1": 0.18,
+    "k2": 0.025,
+    "k3": 0.04,
+    "k7": "[[0.0, 0.3, 0.6, 1.0, 1.4],[0.9, 1.0, 1.0, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 3,
+  "fields": {
+    "name": "\u0410\u043c\u043c\u0438\u0430\u043a \u0438\u0437\u043e\u0442\u0435\u0440\u043c\u0438\u0447\u0435\u0441\u043a\u043e\u0435 \u0445\u0440\u0430\u043d\u0435\u043d\u0438\u0435",
+    "form": "NH3",
+    "gas_density": null,
+    "liquid_density": 0.681,
+    "boiling_t": 33.42,
+    "toxodeth": 15.0,
+    "k1": 0.01,
+    "k2": 0.025,
+    "k3": 0.04,
+    "k7": "[[0.0, 1.0, 1.0, 1.0, 1.0],[0.9, 1.0, 1.0, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 4,
+  "fields": {
+    "name": "\u0410\u0446\u0435\u0442\u043e\u043d\u0438\u0442\u0440\u0438\u043b",
+    "form": "C2HsN",
+    "gas_density": null,
+    "liquid_density": 0.786,
+    "boiling_t": 81.6,
+    "toxodeth": 21.6,
+    "k1": 0.0,
+    "k2": 0.004,
+    "k3": 0.028,
+    "k7": "[[0.02, 0.3, 1.0, 1.0, 2.6],null]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 5,
+  "fields": {
+    "name": "\u0410\u0446\u0435\u0442\u043e\u043d\u0446\u0438\u0430\u043d\u0433\u0438\u0434\u0440\u0438\u043d",
+    "form": "C4H7NO",
+    "gas_density": null,
+    "liquid_density": 0.932,
+    "boiling_t": 120.0,
+    "toxodeth": 1.9,
+    "k1": 0.0,
+    "k2": 0.002,
+    "k3": 0.316,
+    "k7": "[[0.0, 0.0, 0.3, 1.0, 1.5],null]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 6,
+  "fields": {
+    "name": "\u0412\u043e\u0434\u043e\u0440\u043e\u0434 \u043c\u044b\u0448\u044c\u044f\u043a\u043e\u0432\u0438\u0441\u0442\u044b\u0439",
+    "form": "AsH3",
+    "gas_density": 0.0035,
+    "liquid_density": 1.64,
+    "boiling_t": 62.47,
+    "toxodeth": 0.2,
+    "k1": 0.17,
+    "k2": 0.054,
+    "k3": 3.0,
+    "k7": "[[0.3, 0.5, 0.8, 1.0, 1.2],[1.0, 1.0, 1.0, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 7,
+  "fields": {
+    "name": "\u0412\u043e\u0434\u043e\u0440\u043e\u0434 \u0444\u0442\u043e\u0440\u0438\u0441\u0442\u044b\u0439",
+    "form": "HF",
+    "gas_density": null,
+    "liquid_density": 0.989,
+    "boiling_t": 19.52,
+    "toxodeth": 4.0,
+    "k1": 0.0,
+    "k2": 0.028,
+    "k3": 0.15,
+    "k7": "[[0.1, 0.2, 0.5, 1.0, 1.0],null]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 8,
+  "fields": {
+    "name": "\u0412\u043e\u0434\u043e\u0440\u043e\u0434 \u0445\u043b\u043e\u0440\u0438\u0441\u0442\u044b\u0439",
+    "form": "HCl",
+    "gas_density": 0.0016,
+    "liquid_density": 1.191,
+    "boiling_t": 85.1,
+    "toxodeth": 2.0,
+    "k1": 0.28,
+    "k2": 0.037,
+    "k3": 0.3,
+    "k7": "[[0.4, 0.6, 0.8, 1.0, 1.2],[1.0, 1.0, 1.0, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 9,
+  "fields": {
+    "name": "\u0412\u043e\u0434\u043e\u0440\u043e\u0434 \u0431\u0440\u043e\u043c\u0438\u0441\u0442\u044b\u0439",
+    "form": "HBr",
+    "gas_density": 0.0036,
+    "liquid_density": 1.49,
+    "boiling_t": 66.77,
+    "toxodeth": 2.4,
+    "k1": 0.13,
+    "k2": 0.055,
+    "k3": 0.25,
+    "k7": "[[0.3, 0.5, 0.8, 1.0, 1.2],[1.0, 1.0, 1.0, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 10,
+  "fields": {
+    "name": "\u0412\u043e\u0434\u043e\u0440\u043e\u0434 \u0446\u0438\u0430\u043d\u0438\u0441\u0442\u044b\u0439",
+    "form": "HCN",
+    "gas_density": null,
+    "liquid_density": 0.687,
+    "boiling_t": 25.7,
+    "toxodeth": 0.2,
+    "k1": 0.0,
+    "k2": 0.026,
+    "k3": 3.0,
+    "k7": "[[0.0, 0.0, 0.4, 1.0, 1.3],null]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 11,
+  "fields": {
+    "name": "\u0414\u0438\u043c\u0435\u0442\u0438\u043b\u0430\u043c\u0438\u043d",
+    "form": "(CH3)2NH",
+    "gas_density": 0.002,
+    "liquid_density": 0.68,
+    "boiling_t": 6.9,
+    "toxodeth": 1.2,
+    "k1": 0.06,
+    "k2": 0.041,
+    "k3": 0.5,
+    "k7": "[[0.0, 0.0, 0.0, 1.0, 2.5],[0.1, 0.3, 0.8, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 12,
+  "fields": {
+    "name": "\u041c\u0435\u0442\u0438\u043b\u0430\u043c\u0438\u043d",
+    "form": "CH5N",
+    "gas_density": 0.0014,
+    "liquid_density": 0.699,
+    "boiling_t": 6.5,
+    "toxodeth": 1.2,
+    "k1": 0.13,
+    "k2": 0.034,
+    "k3": 0.5,
+    "k7": "[[0.0, 0.0, 0.3, 1.0, 1.8],[0.3, 0.7, 1.0, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 13,
+  "fields": {
+    "name": "\u041c\u0435\u0442\u0438\u043b \u0431\u0440\u043e\u043c\u0438\u0441\u0442\u044b\u0439",
+    "form": "CHBr",
+    "gas_density": null,
+    "liquid_density": 1.732,
+    "boiling_t": 3.6,
+    "toxodeth": 1.2,
+    "k1": 0.04,
+    "k2": 0.039,
+    "k3": 0.5,
+    "k7": "[[0.0, 0.0, 0.0, 1.0, 2.3],[0.2, 0.4, 0.9, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 14,
+  "fields": {
+    "name": "\u041c\u0435\u0442\u0438\u043b \u0445\u043b\u043e\u0440\u0438\u0441\u0442\u044b\u0439",
+    "form": "CH3Cl",
+    "gas_density": 0.0023,
+    "liquid_density": 0.983,
+    "boiling_t": 23.76,
+    "toxodeth": 10.8,
+    "k1": 0.125,
+    "k2": 0.044,
+    "k3": 0.056,
+    "k7": "[[0.0, 0.1, 0.6, 1.0, 1.5],[0.5, 1.0, 1.0, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 15,
+  "fields": {
+    "name": "\u041c\u0435\u0442\u0438\u043b\u0430\u043a\u0440\u0438\u043b\u0430\u0442",
+    "form": "C4H6O2",
+    "gas_density": null,
+    "liquid_density": 0.953,
+    "boiling_t": 80.2,
+    "toxodeth": 6.0,
+    "k1": 0.0,
+    "k2": 0.005,
+    "k3": 0.1,
+    "k7": "[[0.1, 0.2, 0.4, 1.0, 3.1],null]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 16,
+  "fields": {
+    "name": "\u041c\u0435\u0442\u0438\u043b\u043c\u0435\u0440\u043a\u0430\u043f\u0442\u0430\u043d",
+    "form": "CH34S",
+    "gas_density": null,
+    "liquid_density": 0.867,
+    "boiling_t": 5.95,
+    "toxodeth": 1.7,
+    "k1": 0.06,
+    "k2": 0.043,
+    "k3": 0.353,
+    "k7": "[[0.0, 0.0, 0.0, 1.0, 2.4],[0.1, 0.3, 0.8, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 17,
+  "fields": {
+    "name": "\u041d\u0438\u0442\u0440\u0438\u043b \u0430\u043a\u0440\u0438\u043b\u043e\u0432\u043e\u0439 \u043a\u0438\u0441\u043b\u043e\u0442\u044b",
+    "form": "C3H3N",
+    "gas_density": null,
+    "liquid_density": 0.806,
+    "boiling_t": 77.3,
+    "toxodeth": 0.75,
+    "k1": 0.0,
+    "k2": 0.007,
+    "k3": 0.8,
+    "k7": "[[0.04, 0.1, 0.4, 1.0, 2.4],null]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 18,
+  "fields": {
+    "name": "\u041e\u043a\u0438\u0441\u043b\u044b \u0430\u0437\u043e\u0442\u0430",
+    "form": null,
+    "gas_density": null,
+    "liquid_density": 1.491,
+    "boiling_t": 21.0,
+    "toxodeth": 1.5,
+    "k1": 0.0,
+    "k2": 0.04,
+    "k3": 0.4,
+    "k7": "[[0.0, 0.0, 0.4, 1.0, 1.0],null]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 19,
+  "fields": {
+    "name": "\u041e\u043a\u0438\u0441\u044c \u044d\u0442\u0438\u043b\u0435\u043d\u0430",
+    "form": "C2H4O",
+    "gas_density": null,
+    "liquid_density": 0.882,
+    "boiling_t": 10.7,
+    "toxodeth": 2.2,
+    "k1": 0.05,
+    "k2": 0.041,
+    "k3": 0.27,
+    "k7": "[[0.0, 0.0, 0.0, 1.0, 3.2],[0.1, 0.3, 0.7, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 20,
+  "fields": {
+    "name": "\u0421\u0435\u0440\u043d\u0438\u0441\u0442\u044b\u0439 \u0430\u043d\u0433\u0438\u0434\u0440\u0438\u0434",
+    "form": "SO2",
+    "gas_density": 0.0029,
+    "liquid_density": 1.462,
+    "boiling_t": 10.1,
+    "toxodeth": 1.8,
+    "k1": 0.11,
+    "k2": 0.049,
+    "k3": 0.333,
+    "k7": "[[0.0, 0.0, 0.3, 1.0, 1.7],[0.2, 0.5, 1.0, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 21,
+  "fields": {
+    "name": "\u0421\u0435\u0440\u043e\u0432\u043e\u0434\u043e\u0440\u043e\u0434",
+    "form": "H2S",
+    "gas_density": 0.0015,
+    "liquid_density": 0.964,
+    "boiling_t": 60.35,
+    "toxodeth": 16.1,
+    "k1": 0.27,
+    "k2": 0.042,
+    "k3": 0.036,
+    "k7": "[[0.3, 0.5, 0.8, 1.0, 1.2],[1.0, 1.0, 1.0, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 22,
+  "fields": {
+    "name": "\u0421\u0435\u0440\u043e\u0443\u0433\u043b\u0435\u0440\u043e\u0434",
+    "form": "C2S",
+    "gas_density": null,
+    "liquid_density": 1.263,
+    "boiling_t": 46.2,
+    "toxodeth": 45.0,
+    "k1": 0.0,
+    "k2": 0.021,
+    "k3": 0.013,
+    "k7": "[[0.1, 0.2, 0.4, 1.0, 2.1],null]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 23,
+  "fields": {
+    "name": "\u0421\u043e\u043b\u044f\u043d\u0430\u044f \u043a\u0438\u0441\u043b\u043e\u0442\u0430 (\u043a\u043e\u043d\u0446\u0435\u043d\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u043d\u043d\u0430\u044f",
+    "form": "HCI",
+    "gas_density": null,
+    "liquid_density": 1.198,
+    "boiling_t": null,
+    "toxodeth": 2.0,
+    "k1": 0.0,
+    "k2": 0.021,
+    "k3": 0.3,
+    "k7": "[[0.0, 0.1, 0.3, 1.0, 1.6],null]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 24,
+  "fields": {
+    "name": "\u0422\u0440\u0438\u043c\u0435\u0442\u0438\u043b\u0430\u043c\u0438\u043d",
+    "form": "(CH3)3N",
+    "gas_density": null,
+    "liquid_density": 0.671,
+    "boiling_t": 2.9,
+    "toxodeth": 6.0,
+    "k1": 0.07,
+    "k2": 0.047,
+    "k3": 0.1,
+    "k7": "[[0.0, 0.0, 0.0, 1.0, 2.2],[0.1, 0.4, 0.9, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 25,
+  "fields": {
+    "name": "\u0424\u043e\u0440\u043c\u0430\u043b\u044c\u0434\u0435\u0433\u0438\u0434",
+    "form": "CH2O",
+    "gas_density": null,
+    "liquid_density": 0.815,
+    "boiling_t": 19.0,
+    "toxodeth": 0.6,
+    "k1": 0.19,
+    "k2": 0.034,
+    "k3": 1.0,
+    "k7": "[[0.0, 0.0, 0.5, 1.0, 1.5],[0.4, 1.0, 1.0, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 26,
+  "fields": {
+    "name": "\u0424\u043e\u0441\u0433\u0435\u043d",
+    "form": "COCl2",
+    "gas_density": 0.0035,
+    "liquid_density": 1.432,
+    "boiling_t": 8.2,
+    "toxodeth": 0.6,
+    "k1": 0.05,
+    "k2": 0.061,
+    "k3": 1.0,
+    "k7": "[[0.0, 0.0, 0.0, 1.0, 2.7],[0.1, 0.3, 0.7, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 27,
+  "fields": {
+    "name": "\u0424\u0442\u043e\u0440",
+    "form": "F",
+    "gas_density": 0.0017,
+    "liquid_density": 1.512,
+    "boiling_t": 188.2,
+    "toxodeth": 0.2,
+    "k1": 0.95,
+    "k2": 0.038,
+    "k3": 3.0,
+    "k7": "[[0.7, 0.8, 0.9, 1.0, 1.1],[1.0, 1.0, 1.0, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 28,
+  "fields": {
+    "name": "\u0424\u043e\u0441\u0444\u043e\u0440 \u0442\u0440\u0435\u0445\u0445\u043b\u043e\u0440\u0438\u0441\u0442\u044b\u0439",
+    "form": "PCls",
+    "gas_density": null,
+    "liquid_density": 1.57,
+    "boiling_t": 75.3,
+    "toxodeth": 3.0,
+    "k1": 0.0,
+    "k2": 0.01,
+    "k3": 0.2,
+    "k7": "[[0.1, 0.2, 0.4, 1.0, 2.3],null]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 29,
+  "fields": {
+    "name": "\u0424\u043e\u0441\u0444\u043e\u0440\u0430 \u0445\u043b\u043e\u0440\u043e\u043a\u0438\u0441\u044c",
+    "form": "POCI3",
+    "gas_density": null,
+    "liquid_density": 1.675,
+    "boiling_t": 107.2,
+    "toxodeth": 0.06,
+    "k1": 0.0,
+    "k2": 0.003,
+    "k3": 10.0,
+    "k7": "[[0.05, 0.1, 0.3, 1.0, 2.6],null]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 30,
+  "fields": {
+    "name": "\u0425\u043b\u043e\u0440",
+    "form": "Cl",
+    "gas_density": 0.0032,
+    "liquid_density": 1.553,
+    "boiling_t": 34.1,
+    "toxodeth": 0.6,
+    "k1": 0.18,
+    "k2": 0.052,
+    "k3": 1.0,
+    "k7": "[[0.0, 0.3, 0.6, 1.0, 1.4],[0.9, 1.0, 1.0, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 31,
+  "fields": {
+    "name": "\u0425\u043b\u043e\u0440\u043f\u0438\u043a\u0440\u0438\u043d",
+    "form": "CCl3NO2",
+    "gas_density": null,
+    "liquid_density": 1.658,
+    "boiling_t": 112.3,
+    "toxodeth": 0.02,
+    "k1": 0.0,
+    "k2": 0.002,
+    "k3": 30.0,
+    "k7": "[[0.03, 0.1, 0.3, 1.0, 2.9],null]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 32,
+  "fields": {
+    "name": "\u0425\u043b\u043e\u0440\u0446\u0438\u0430\u043d",
+    "form": "ClCN",
+    "gas_density": 0.0021,
+    "liquid_density": 1.22,
+    "boiling_t": 12.6,
+    "toxodeth": 0.75,
+    "k1": 0.04,
+    "k2": 0.048,
+    "k3": 0.8,
+    "k7": "[[0.0, 0.0, 0.0, 1.0, 3.9],[0.0, 0.0, 0.6, 1.0, 1.0]]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 33,
+  "fields": {
+    "name": "\u042d\u0442\u0438\u043b\u0435\u043d\u0438\u043c\u0438\u043d",
+    "form": "C2H5N",
+    "gas_density": null,
+    "liquid_density": 0.838,
+    "boiling_t": 55.0,
+    "toxodeth": 4.8,
+    "k1": 0.0,
+    "k2": 0.009,
+    "k3": 0.125,
+    "k7": "[[0.05, 0.1, 0.4, 1.0, 2.2],null]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 34,
+  "fields": {
+    "name": "\u042d\u0442\u0438\u043b\u0435\u043d\u0441\u0443\u043b\u044c\u0444\u0438\u0434",
+    "form": "C2H4S",
+    "gas_density": null,
+    "liquid_density": 1.005,
+    "boiling_t": 55.0,
+    "toxodeth": 0.1,
+    "k1": 0.0,
+    "k2": 0.013,
+    "k3": 6.0,
+    "k7": "[[0.05, 0.1, 0.4, 1.0, 2.2],null]",
+    "descr": null
+  }
+},
+{
+  "model": "hazard_substance.hazardouschemical",
+  "pk": 35,
+  "fields": {
+    "name": "\u042d\u0442\u0438\u043b\u043c\u0435\u0440\u043a\u0430\u043f\u0442\u0430\u043d",
+    "form": "C2H5SH",
+    "gas_density": null,
+    "liquid_density": 0.839,
+    "boiling_t": 35.0,
+    "toxodeth": 2.2,
+    "k1": 0.0,
+    "k2": 0.028,
+    "k3": 0.27,
+    "k7": "[[0.1, 0.2, 0.5, 1.0, 1.7],null]",
+    "descr": null
+  }
+}
+]

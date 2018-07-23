@@ -7,3 +7,7 @@ _cache/
 data/
 manage.py
 *.pyc
+*.zip
+.pytest_cache
+db.json
+geobjects/data

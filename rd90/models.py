@@ -1,19 +1,28 @@
-from django.db import models
-from datetime import datetime, timedelta
-from django.utils import timezone
+from datetime import timedelta
 
-from weather.dovsoa import get_time_of_day
-
-# from hazard_substance.models import HazardousChemical
-
-from geobjects.models import Object, SubstanceAmount
-from weather.models import Weather
-import rd90.calculation as calc
 from django.contrib.postgres.fields import JSONField
+from django.db import models
+
+import rd90.calc.all as calc
+from geobjects.models import Object, SubstanceInfo
+from weather.dovsoa import get_time_of_day
+from weather.models import Weather
+
+
+
+# from django.core import serializers
 
 
 
 class Rd90Calc(models.Model):
+
+    owner = models.ForeignKey(
+        'auth.User',
+        related_name='rd90calcs',
+        on_delete=models.CASCADE,
+        default=1
+    )
+
 
     crash_dtime = models.DateTimeField(
         null=True,
@@ -58,81 +67,14 @@ class Rd90Calc(models.Model):
         verbose_name='ХОО',
     )
 
-    chemical = models.ForeignKey(
-        SubstanceAmount,
-        blank=True,
-        on_delete=models.CASCADE,
-        null=True,
-        verbose_name='Количество вещества (т)',
+    chemical = models.ManyToManyField(
+        SubstanceInfo,
+        verbose_name='Количество вещества',
     )
     chemical.short_description = "Выберете для какого вещества на объекте производится расчет"
 
-
-
-
-    # FULL = 'full'
-    # ONE_TANK = 'one_tank'
-    # IS_SET = 'is_set'
-    #
-    #
-    # AMOUNT_FOR_CHOICES = (
-    #     (FULL, 'всех емкостей'),
-    #     (ONE_TANK, 'одной емкости'),
-    # )
-    #
-    #
-    #
-    # chemicals_amount_calc = models.CharField(
-    #     max_length=10,
-    #     choices=AMOUNT_FOR_CHOICES,
-    #     default=FULL,
-    #     verbose_name='Расчет для:',
-    # )
-
-
-    # chemicals_amount = models.IntegerField(
-    #     blank=True,
-    #     verbose_name='Количество вещества',
-    #     default=0,
-    # )
-    # chemicals_amount.short_description = "Будет задано исходя из поля Расчет для"
-
-    #
-    # STORAGE_CHOICES = (
-    #     ('liquid', 'жидкость'),
-    #     ('gas', 'газ'),
-    #     ('calc', 'вычисляется')
-    # )
-    #
-    # hc_storage = models.CharField(
-    #     max_length=8,
-    #     choices=STORAGE_CHOICES,
-    #     default='calc',
-    #     verbose_name='Способ хранение АХОВ',
-    # )
-
-    # # K4 - коэффициент, учитывающий скорость ветра
-    # k4 = models.FloatField(
-    #     blank=True,
-    #     default=0,
-    #     verbose_name='K4 - коэффициент',
-    #     editable=False,
-    # )
-    #
-    # # K5 - коэффициент, учитывающий степень вертикальной устойчивости атмосферы
-    # k5 = models.FloatField(
-    #     blank=True,
-    #     default=0,
-    #     verbose_name='K5 - коэффициент',
-    #     editable=False,
-    # )
-    # # K6 - коэффициент, зависящий от времени N, прошедшего после начала аварии;
-    # k6 = models.FloatField(
-    #     blank=True,
-    #     default=0,
-    #     verbose_name='K5 - коэффициент',
-    #     editable=False,
-    # )
+    def get_chemicals(self):
+        return "\n".join([str(chem) for chem in self.chemical.all()])
 
     evaporation_duration = models.DurationField(
         blank=True,
@@ -170,19 +112,91 @@ class Rd90Calc(models.Model):
         editable=False,
     )
 
-    json_calculation = JSONField()
+    json_calculation = JSONField(
+        null=True, editable=False
+    )
+
 
     # def save(self, *args, **kwargs):
+    #     chemical_amount = self.chemical.count()
+    #     if chemical_amount == 1:
+    #         rd90 = calc.RD90(self, self.chemical.first())
+    #         self.evaporation_duration = rd90.evaporation_duration
+    #         self.full_contamination_depth = rd90.full_contamination_depth
+    #         self.angular_size = rd90.angular_size
+    #         self.possible_contamination_area = rd90.possible_contamination_area
+    #         self.actual_contamination_area = rd90.actual_contamination_area
+    #         self.json_calculation = rd90.json
+    #         print('evaporation_duration %s' % self.evaporation_duration)
+    #
+    #     if chemical_amount > 1:
+    #
+    #         rd90_list = []
+    #         after_crash_hours = self.after_crash_time.seconds / 3600
+    #
+    #         print('self.chemical: %s' % self.chemical)
+    #
+    #         for chemical in self.chemical.iterator():
+    #             rd90_list.append(calc.RD90(self, chemical))
+    #
+    #         self.evaporation_duration = max(
+    #             [rd90.evaporation_duration for rd90 in rd90_list]
+    #         )
+    #
+    #         equivalent_amount = calc.RD90.get_full_equivalent_amount(
+    #             wind_speed=self.weather.wind_speed,
+    #             dovsoa=self.weather.dovsoa,
+    #             rd90_list=rd90_list,
+    #         )
+    #         contamination_depth = calc.RD90.get_contamination_depth(
+    #             equivalent_amount=equivalent_amount,
+    #             wind_speed=self.weather.wind_speed,
+    #         )
+    #         front_speed = calc.RD90.get_front_speed(
+    #             wind_speed=self.weather.wind_speed,
+    #             dovsoa=self.weather.dovsoa,
+    #         )
+    #         possible_contamination_depth = calc.RD90.get_possible_contamination_depth(
+    #             front_speed=front_speed,
+    #             after_crash_time=after_crash_hours,
+    #         )
+    #         self.full_contamination_depth = min(contamination_depth, possible_contamination_depth)
+    #         self.angular_size = calc.RD90.get_angular_size(wind_speed=self.weather.wind_speed)
+    #         self.possible_contamination_area = calc.RD90.get_possible_contamination_area(
+    #             contamination_depth=contamination_depth,
+    #             angular_size=self.angular_size,
+    #         )
+    #         self.actual_contamination_area = calc.RD90.get_actual_contamination_area(
+    #             contamination_depth=contamination_depth,
+    #             dovsoa=self.weather.dovsoa,
+    #             after_crash_time=after_crash_hours,
+    #         )
+    #         print('self %s ' % self.__dict__)
+    #
+    #         # instance_json = serializers.serialize("json", instance)
+    #
+    #         # instance.json_calculation = ''
+    #         instance_dict = self.__dict__
+    #
+    #         d = dict((k, v) for k, v in instance_dict.items()
+    #                  if k not in ['_state', 'json_calculation', 'chemical', 'evaporation_duration', 'k1237',
+    #                               'after_crash_time'])
+    #         print(d)
+    #         self.json_calculation = json.dumps(d, indent=4, sort_keys=True, ensure_ascii=False)
+    #         # instance.json_calculation = instance_json
     #
     #
     #
-    #     super(Rd90Calc, self).save(*args, **kwargs)
+    #         super(Rd90Calc, self).save(*args, **kwargs)
 
 
 
 
     def __str__(self):
-        return 'АХОВ: {}; Погода: {}'.format(self.chemical, self.weather)
+        chems = ''
+        for chem in self.chemical.iterator():
+            chems += chem.__str__() + ', '
+        return 'АХОВ: {}; Погода: {}'.format(chems, self.weather)
 
     class Meta:
         db_table = 'rd90calcs'
@@ -190,7 +204,7 @@ class Rd90Calc(models.Model):
         verbose_name_plural = 'РД 90 расчеты'
 
 
-from django.db.models.signals import pre_save, post_init
+from django.db.models.signals import pre_save, m2m_changed
 from django.dispatch import receiver
 
 
@@ -212,16 +226,269 @@ def calc_time_of_day(sender, instance, **kwargs):
         print('time of day {}'.format(instance.weather.time_of_day))
 
 
-@receiver(pre_save, sender=Rd90Calc)
+# def handle_flow(sender, instance, *args, **kwargs):
+
+@receiver(m2m_changed, sender=Rd90Calc.chemical.through) #pre_save, sender=Rd90Calc)
 def calc_rd90(sender, instance, **kwargs):
-    rd90 = calc.RD90(instance)
-    instance.evaporation_duration = rd90.evaporation_duration
-    instance.full_contamination_depth = rd90.full_contamination_depth
-    instance.angular_size = rd90.angular_size
-    instance.possible_contamination_area = rd90.possible_contamination_area
-    instance.actual_contamination_area = rd90.actual_contamination_area
-    instance.json_calculation = rd90.json
-    print('evaporation_duration %s' % instance.evaporation_duration)
+    print("+++++++++++++++++++++++++++++++++++++Signal catched !")
+    chemical_amount = instance.chemical.count()
+    print('chemical_amount: %s' % chemical_amount)
+
+    if chemical_amount == 1:
+        # rd90 = calc.RD90(instance, instance.chemical.first())
+        chem = instance.chemical.first()
+        print('chemical: %s' % chem)
+        rd90 = ''
+        rd90 = calc.RD90(
+            hazard_substance_obj=chem.hazard_substance,
+            substance_amount=chem.substance_amount,
+            embank_height=chem.embank_height,
+            storage_condition=chem.embank_height,
+            weather_dovsoa=instance.weather.dovsoa,
+            weather_wind_speed=instance.weather.wind_speed,
+            weather_air_t=instance.weather.air_t,
+            weather_atmospheric_pressure=instance.weather.get_atmospheric_pressure_in_atm(),
+            after_crash_time=instance.after_crash_time,
+        )
+
+        instance.evaporation_duration = rd90.evaporation_duration
+        instance.full_contamination_depth = rd90.full_contamination_depth
+        instance.angular_size = rd90.angular_size
+        instance.possible_contamination_area = rd90.possible_contamination_area
+        instance.actual_contamination_area = rd90.actual_contamination_area
+        instance.json_calculation = rd90.json
+        print('+++++++++++++++++++++++++++++instance.json_calculation %s' % instance.json_calculation)
+
+        print('evaporation_duration %s' % instance.evaporation_duration)
+
+        print('+++++++++++++++++++++++++++++json_calculation %s' % rd90.json)
+
+    if chemical_amount > 1:
+        rd90_list = []
+        # after_crash_hours = instance.after_crash_time.seconds / 3600
+
+
+
+        chemical = kwargs.pop('chemical', None)
+
+        print('kwargs: %s' % kwargs)
+        print('instance.weather: %s' % instance.weather)
+        dovsoa = instance.weather.dovsoa
+        # print('dovsoa: %s' % dovsoa)
+        wind_speed = instance.weather.wind_speed
+        air_t = instance.weather.air_t
+
+        for chem in instance.chemical.iterator():
+            rd90_list.append(
+                calc.RD90(
+                    hazard_substance_obj=chem.hazard_substance,
+                    substance_amount=chem.substance_amount,
+                    embank_height=chem.embank_height,
+                    storage_condition=chem.embank_height,
+                    weather_dovsoa=dovsoa,
+                    weather_wind_speed=wind_speed,
+                    weather_air_t=air_t,
+                    weather_atmospheric_pressure=instance.weather.get_atmospheric_pressure_in_atm(),
+                    after_crash_time=instance.after_crash_time
+                )
+            )
+
+        rd90_full = calc.RD90FullCrash(
+            weather_dovsoa=dovsoa,
+            weather_wind_speed=wind_speed,
+            rd90_list=rd90_list,
+            after_crash_time=instance.after_crash_time,
+        )
+
+        instance.evaporation_duration = rd90_full.evaporation_duration
+        instance.full_contamination_depth = rd90_full.contamination_depth
+        instance.angular_size = rd90_full.angular_size
+        instance.possible_contamination_area = rd90_full.possible_contamination_area
+        instance.actual_contamination_area = rd90_full.actual_contamination_area
+        print('instance %s ' % instance.__dict__)
+
+        # instance_json = serializers.serialize("json", instance)
+
+        instance.json_calculation = ''
+        instance_dict = instance.__dict__
+
+        d = dict((k, v) for k, v in instance_dict.items()
+                 if k not in ['_state', 'json_calculation', 'chemical', 'evaporation_duration', 'k1237',
+                              'after_crash_time', 'crash_dtime'])
+        print(d)
+        instance.json_calculation = d
+        # json.dumps(d, indent=4, sort_keys=True, ensure_ascii=False)
+    instance.save()
+
+# @receiver(pre_save, sender=Rd90Calc)
+# def calc_rd90(sender, instance, **kwargs):
+#     print("+++++++++++++++++++++++++++++++++++++Signal catched !")
+#     chemical_amount = instance.chemical.count()
+#     print('chemical_amount: %s' % chemical_amount)
+#
+#     if chemical_amount == 1:
+#         # rd90 = calc.RD90(instance, instance.chemical.first())
+#         chem = instance.chemical.first()
+#         print('chemical: %s' % chem)
+#         rd90 = ''
+#         rd90 = calc.RD90(
+#             hazard_substance_obj=chem.hazard_substance,
+#             substance_amount=chem.substance_amount,
+#             embank_height=chem.embank_height,
+#             storage_condition=chem.embank_height,
+#             weather_dovsoa=instance.weather.dovsoa,
+#             weather_wind_speed=instance.weather.wind_speed,
+#             weather_air_t=instance.weather.air_t,
+#             weather_atmospheric_pressure=instance.weather.get_atmospheric_pressure_in_atm(),
+#             after_crash_time=instance.after_crash_time,
+#         )
+#
+#         instance.evaporation_duration = rd90.evaporation_duration
+#         instance.full_contamination_depth = rd90.full_contamination_depth
+#         instance.angular_size = rd90.angular_size
+#         instance.possible_contamination_area = rd90.possible_contamination_area
+#         instance.actual_contamination_area = rd90.actual_contamination_area
+#         instance.json_calculation = rd90.json
+#         print('+++++++++++++++++++++++++++++instance.json_calculation %s' % instance.json_calculation)
+#
+#         print('evaporation_duration %s' % instance.evaporation_duration)
+#
+#         print('+++++++++++++++++++++++++++++json_calculation %s' % rd90.json)
+#
+#     if chemical_amount > 1:
+#         rd90_list = []
+#         # after_crash_hours = instance.after_crash_time.seconds / 3600
+#
+#
+#
+#         chemical = kwargs.pop('chemical', None)
+#
+#         print('kwargs: %s' % kwargs)
+#         print('instance.weather: %s' % instance.weather)
+#         dovsoa = instance.weather.dovsoa
+#         # print('dovsoa: %s' % dovsoa)
+#         wind_speed = instance.weather.wind_speed
+#         air_t = instance.weather.air_t
+#
+#         for chem in instance.chemical.iterator():
+#             rd90_list.append(
+#                 calc.RD90(
+#                     hazard_substance_obj=chem.hazard_substance,
+#                     substance_amount=chem.substance_amount,
+#                     embank_height=chem.embank_height,
+#                     storage_condition=chem.embank_height,
+#                     weather_dovsoa=dovsoa,
+#                     weather_wind_speed=wind_speed,
+#                     weather_air_t=air_t,
+#                     weather_atmospheric_pressure=instance.weather.get_atmospheric_pressure_in_atm(),
+#                     after_crash_time=instance.after_crash_time
+#                 )
+#             )
+#
+#         rd90_full = calc.RD90FullCrash(
+#             weather_dovsoa=dovsoa,
+#             weather_wind_speed=wind_speed,
+#             rd90_list=rd90_list,
+#             after_crash_time=instance.after_crash_time,
+#         )
+#
+#         instance.evaporation_duration = rd90_full.evaporation_duration
+#         instance.full_contamination_depth = rd90_full.contamination_depth
+#         instance.angular_size = rd90_full.angular_size
+#         instance.possible_contamination_area = rd90_full.possible_contamination_area
+#         instance.actual_contamination_area = rd90_full.actual_contamination_area
+#         print('instance %s ' % instance.__dict__)
+#
+#         # instance_json = serializers.serialize("json", instance)
+#
+#         instance.json_calculation = ''
+#         instance_dict = instance.__dict__
+#
+#         d = dict((k, v) for k, v in instance_dict.items()
+#                  if k not in ['_state', 'json_calculation', 'chemical', 'evaporation_duration', 'k1237',
+#                               'after_crash_time', 'crash_dtime'])
+#         print(d)
+#         instance.json_calculation = d
+#         # json.dumps(d, indent=4, sort_keys=True, ensure_ascii=False)
+#     # instance.save()
+
+
+
+# m2m_changed.connect(handle_flow, sender=Rd90Calc.chemical.through)
+
+
+# @receiver(m2m_changed, sender=Rd90Calc.chemical.through) #pre_save, sender=Rd90Calc)
+# def calc_rd90(sender, instance, **kwargs):
+#     chemical_amount = instance.chemical.count()
+#     print('chemical_amount: %s' % chemical_amount)
+#
+#     if chemical_amount == 1:
+#         rd90 = calc.RD90(instance, instance.chemical.first())
+#         instance.evaporation_duration = rd90.evaporation_duration
+#         instance.full_contamination_depth = rd90.full_contamination_depth
+#         instance.angular_size = rd90.angular_size
+#         instance.possible_contamination_area = rd90.possible_contamination_area
+#         instance.actual_contamination_area = rd90.actual_contamination_area
+#         instance.json_calculation = rd90.json
+#         print('evaporation_duration %s' % instance.evaporation_duration)
+#
+#     if chemical_amount > 1:
+#         rd90_list = []
+#         after_crash_hours = instance.after_crash_time.seconds / 3600
+#
+#         chemical = kwargs.pop('chemical', None)
+#         print('kwargs: %s' % kwargs)
+#         print('chemical: %s' % chemical)
+#
+#         for chemical in instance.chemical.iterator():
+#             rd90_list.append(calc.RD90(instance, chemical))
+#
+#         instance.evaporation_duration = max(
+#             [rd90.evaporation_duration for rd90 in rd90_list]
+#         )
+#
+#         equivalent_amount = calc.RD90.get_full_equivalent_amount(
+#             wind_speed=instance.weather.wind_speed,
+#             dovsoa=instance.weather.dovsoa,
+#             rd90_list=rd90_list,
+#         )
+#         contamination_depth = calc.RD90.get_contamination_depth(
+#             equivalent_amount=equivalent_amount,
+#             wind_speed=instance.weather.wind_speed,
+#         )
+#         front_speed = calc.RD90.get_front_speed(
+#             wind_speed=instance.weather.wind_speed,
+#             dovsoa=instance.weather.dovsoa,
+#         )
+#         possible_contamination_depth = calc.RD90.get_possible_contamination_depth(
+#             front_speed=front_speed,
+#             after_crash_time=after_crash_hours,
+#         )
+#         instance.full_contamination_depth = min(contamination_depth, possible_contamination_depth)
+#         instance.angular_size = calc.RD90.get_angular_size(wind_speed=instance.weather.wind_speed)
+#         instance.possible_contamination_area = calc.RD90.get_possible_contamination_area(
+#             contamination_depth=contamination_depth,
+#             angular_size=instance.angular_size,
+#         )
+#         instance.actual_contamination_area = calc.RD90.get_actual_contamination_area(
+#             contamination_depth=contamination_depth,
+#             dovsoa=instance.weather.dovsoa,
+#             after_crash_time=after_crash_hours,
+#         )
+#         print('instance %s ' % instance.__dict__)
+#
+#         # instance_json = serializers.serialize("json", instance)
+#
+#         instance.json_calculation = ''
+#         instance_dict = instance.__dict__
+#
+#         d = dict((k, v) for k, v in instance_dict.items()
+#                  if k not in ['_state', 'json_calculation', 'chemical', 'evaporation_duration', 'k1237', 'after_crash_time'])
+#         print(d)
+#         instance.json_calculation = json.dumps(d, indent=4, sort_keys=True, ensure_ascii=False)
+
+
+
 
 
     # danger_object = instance.chem_danger_object

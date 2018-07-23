@@ -23,6 +23,7 @@ if settings.DEBUG:
 
 urlpatterns = [
     url(r'^__debug__/', include(debug_toolbar.urls)),
+    url(r'^', include('rd90.urls')),
     path('admin/', admin.site.urls),
     path('', include('geobjects.urls')),
 ]
