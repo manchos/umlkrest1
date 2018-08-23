@@ -1,7 +1,12 @@
-.direnv/
-.envrc
 .idea/
-venv/
 /static/
+_cache/
+data/
 manage.py
 *.pyc
+*.zip
+*.shp
+*.dbf
+.pytest_cache
+db.json
+geobjects/data/
