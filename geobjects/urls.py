@@ -7,5 +7,4 @@ from geobjects.views import HomePageView, get_geojson_objects
 urlpatterns = [
     path('', HomePageView.as_view(), name='home'),
     path('geobjects_data/', get_geojson_objects, name='objects'),
-
 ]

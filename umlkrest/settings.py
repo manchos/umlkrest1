@@ -42,9 +42,12 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'leaflet',
+    'hazard_substance',
     'corsheaders',
     'geobjects',
-
+    'rd90',
+    'weather',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -120,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -167,3 +170,12 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.logging.LoggingPanel',
     'debug_toolbar.panels.redirects.RedirectsPanel',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'api.UTF8JSONRender',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    )
+}
+
+
