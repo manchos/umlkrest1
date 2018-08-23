@@ -12,3 +12,4 @@ manage.py
 .pytest_cache
 db.json
 geobjects/data/
+rd90/fixtures/
