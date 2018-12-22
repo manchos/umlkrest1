@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'django.contrib.gis',
     'django_extensions',
+    'profiles.apps.ProfilesConfig',
     'rest_framework',
+    'mptt',
     'leaflet',
     'hazard_substance',
     'corsheaders',
@@ -48,7 +50,11 @@ INSTALLED_APPS = [
     'rd90',
     'weather',
     'api',
+    'regions',
 ]
+
+AUTH_USER_MODEL = 'profiles.CustomUser'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -68,7 +74,7 @@ ROOT_URLCONF = 'umlkrest.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -82,6 +88,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'umlkrest.wsgi.application'
+
+
 
 
 # Database

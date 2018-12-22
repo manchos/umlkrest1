@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from rd90.models import Rd90Calc
 from weather.serializers import WeatherSerializer
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from geobjects.serializers import ObjectSerializer
+from profiles.models import CustomUser
 
 
 class Rd90CalcSerializer(serializers.ModelSerializer):
@@ -36,6 +37,6 @@ class UserSerializer(serializers.ModelSerializer):
     rd90calcs = serializers.PrimaryKeyRelatedField(many=True, queryset=Rd90Calc.objects.all())
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ('id', 'username', 'rd90calcs')
 

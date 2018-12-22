@@ -2,6 +2,10 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 
 # Create your models here.
+def default_k7_list():
+    return [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
+
+
 
 class HazardousChemical(models.Model):
     name = models.CharField(max_length=255)
@@ -13,7 +17,7 @@ class HazardousChemical(models.Model):
     k1 = models.FloatField(null=True, blank=True)
     k2 = models.FloatField(null=True, blank=True)
     k3 = models.FloatField(null=True, blank=True)
-    k7 = JSONField(default='[[0,0,0,0,0], [0,0,0,0,0]]')
+    k7 = JSONField(default=default_k7_list())
     descr = models.TextField(null=True, blank=True)
 
 

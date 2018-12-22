@@ -19,8 +19,6 @@ admin.site.register(Weather)
 #     # inlines = [SubstanceAmountInline, FeatureInline]
 
 
-
-
 class Rd90CalcAdmin(admin.ModelAdmin):
     list_display = ('chem_danger_object', 'get_chemicals', 'weather')
     # list_display = ('chem_danger_object')
@@ -36,7 +34,6 @@ class Rd90CalcAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'chem_danger_object',
                 'crash_dtime',
                 'after_crash_time',
                 'weather',

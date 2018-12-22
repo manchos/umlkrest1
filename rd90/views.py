@@ -12,7 +12,8 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from rest_framework import permissions
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from profiles.models import CustomUser
 from rd90.serializers import UserSerializer
 from rest_framework import generics
 
@@ -79,11 +80,11 @@ class Rd90CalcDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class UserList(generics.ListAPIView):
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
 
 class UserDetail(generics.RetrieveAPIView):
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
 # @csrf_exempt
 # def rd90_list(request):

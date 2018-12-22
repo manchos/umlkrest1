@@ -7,6 +7,7 @@ import rd90.calc.all as calc
 from geobjects.models import Object, SubstanceInfo
 from weather.dovsoa import get_time_of_day
 from weather.models import Weather
+from profiles.models import CustomUser
 
 
 
@@ -17,7 +18,8 @@ from weather.models import Weather
 class Rd90Calc(models.Model):
 
     owner = models.ForeignKey(
-        'auth.User',
+        # 'profiles.CustomUser',
+        CustomUser,
         related_name='rd90calcs',
         on_delete=models.CASCADE,
         default=1
