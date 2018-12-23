@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'weather',
     'api',
     'regions',
+    'ice_check',
 ]
 
 AUTH_USER_MODEL = 'profiles.CustomUser'
