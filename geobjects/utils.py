@@ -5,6 +5,7 @@ from enum import Enum
 import requests_cache
 import os
 
+
 class ChoiceEnum(Enum):
     @classmethod
     def choices(cls):
@@ -45,6 +46,7 @@ def get_district_short_name(district_full_name): #'юго-восточный а�
         re_ = re.findall('^([а-яА-Я]+)[ ]+', district)
 
     return ''.join([a[:1].upper() for a in re_]) + 'АО' #ЮВАО
+
 
 def set_request_cache():
     if not os.path.exists('_cache'):

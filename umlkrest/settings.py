@@ -70,6 +70,8 @@ MIDDLEWARE = [
 
 ]
 
+MIDDLEWARE += ('crum.CurrentRequestUserMiddleware',)
+
 ROOT_URLCONF = 'umlkrest.urls'
 
 TEMPLATES = [
