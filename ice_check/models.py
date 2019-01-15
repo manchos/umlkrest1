@@ -7,9 +7,9 @@ from core.models import TimeStampedModel
 from crum import get_current_user
 from django.contrib.gis.db import models as gismodels
 
-
+import logging
 # Create your models here.
-
+logging.debug('Debug Message')
 
 WATER_TYPE_CHOICES = AutoChoices(
     ('RIVER', 1, 'река', {'name': 'река'}),
@@ -23,14 +23,34 @@ WATER_TYPE_CHOICES = AutoChoices(
 )
 
 
+class Current(object):
+
+    region = None
+    region_user = None
+
+    def is_region(self, user):
+
+        if self.region_user:
+            return True
+        else:
+            if user.groups.filter(name='федеральный округ').exists():
+                self.region_user = CustomUser.objects.get(pk=user.id)
+                self.region = self.region_user.region
+                return True
+            else:
+                return False
+
+current = Current()
+
+
 class RegionManager(models.Manager):
     def get_queryset(self):
-        user = get_current_user()
-        if user.groups.filter(name='федеральный округ').exists():
-            custom_user = CustomUser.objects.get(pk=user.id)
+        # user = get_current_user()
+        # if Current.region:
+        if current.is_region(user=get_current_user()):
             return super().get_queryset().filter(
-                region=custom_user.region
-            )
+                region=current.region
+            ).select_related('region')
         else:
             return super().get_queryset()
 
@@ -67,19 +87,30 @@ class WaterBody(models.Model):
 
 
 class PostRegionManager(models.Manager):
+    use_for_related_fields = True
+
     def get_queryset(self):
         user = get_current_user()
-        if user.groups.filter(name='федеральный округ').exists():
+        if user.groups and user.groups.filter(name='федеральный округ').exists():
             custom_user = CustomUser.objects.get(pk=user.id)
+
             return super().get_queryset().filter(
                 water_body__region=custom_user.region
-            )
+            ).select_related('water_body').select_related('water_body__region')
         else:
-            return super().get_queryset()
+            return (
+                super().get_queryset()
+                .select_related('water_body')
+                .select_related('water_body__region')
+            )
+
 
 
 class IceCheckPost(gismodels.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(
+        max_length=100,
+        verbose_name="Наименование",
+    )
     water_body = models.ForeignKey(
         WaterBody,
         related_name='ice_check_posts',
@@ -98,6 +129,9 @@ class IceCheckPost(gismodels.Model):
 
     objects = PostRegionManager()
 
+    def get_region(self):
+        return self.water_body.region
+
     def __str__(self):
         return '{}, {}'.format(self.water_body, self.name)
 
@@ -109,11 +143,9 @@ class IceCheckPost(gismodels.Model):
 
 class IceThicknessManager(models.Manager):
     def get_queryset(self):
-        user = get_current_user()
-        if user.groups.filter(name='федеральный округ').exists():
-            custom_user = CustomUser.objects.get(pk=user.id)
+        if current.is_region(user=get_current_user()):
             return super().get_queryset().filter(
-                ice_check_post__water_body__region=custom_user.region
+                ice_check_post__water_body__region=current.region
             )
         else:
             return super().get_queryset()

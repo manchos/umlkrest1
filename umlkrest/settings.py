@@ -153,12 +153,20 @@ STATICFILES_DIR = (
     os.path.join(BASE_DIR, 'static')
 )
 
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 # CORS_ORIGIN_ALLOW_ALL = True
 # CORS_ALLOW_CREDENTIALS = True
 
 LEAFLET_CONFIG ={
     'DEFAULT_CENTER': (55.754646, 37.621463),
-    'DEFAULT_ZOOM': 10,
+    'DEFAULT_ZOOM': 8,
     'MIN_ZOOM': 3,
     'MAX_ZOOM': 20,
     # 'SCALE': 'imperial'

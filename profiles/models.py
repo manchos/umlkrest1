@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from regions.models import Region
 # from django.contrib.auth.models import Group, User
 # from django.contrib import admin
+from extended_choices import AutoChoices
 
 # AUTH_USER_MODEL = 'profiles.CustomUser'
 
@@ -27,3 +28,9 @@ class CustomUser(AbstractUser):
         on_delete=models.SET_NULL,
         verbose_name="Регион"
     )
+
+    def is_region(self):
+        if self.groups.filter(name='федеральный округ').exists():
+            return True
+        else:
+            return False

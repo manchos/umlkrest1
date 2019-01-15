@@ -6,7 +6,7 @@ from leaflet.admin import LeafletGeoAdmin
 
 class RegionAdmin(MPTTModelAdmin, LeafletGeoAdmin):
     mptt_level_indent = 20
-    # list_display = ('name', 'slug', 'is_active', 'order')
+    fields = ('name', 'short_name', 'slug_name', 'parent', 'geojson_file', 'borders')
     # list_editable = ('is_active',)
     prepopulated_fields = {"slug_name": ("short_name",)}
     # Specify name of sortable property

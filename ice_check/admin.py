@@ -1,14 +1,22 @@
 from django.contrib import admin
 
 # Register your models here.
-
-from .models import WaterBody
-from .models import IceCheckPost
+from .models import WaterBody, IceCheckPost, IceThickness, Current
 from regions.models import Region
-from .models import IceThickness
 from leaflet.admin import LeafletGeoAdmin
 from profiles.models import CustomUser
+import logging
+from crum import get_current_user
 
+
+
+
+logging.debug('Debug Message')
+
+
+
+class IceCheckPostInline(admin.StackedInline):
+    model = IceCheckPost
 
 
 class WaterBodyAdmin(admin.ModelAdmin):
@@ -18,8 +26,12 @@ class WaterBodyAdmin(admin.ModelAdmin):
     # Specify name of sortable property
     # sortable = 'order'
     # kwargs['initial'] = request.user.id
+    list_select_related = ('region',)
+
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'region' and request.user.groups.filter(name='федеральный округ').exists():
+        if (db_field.name == 'region' and
+                request.user.groups.filter(name='федеральный округ').exists()):
             kwargs['initial'] = request.user.region
             kwargs['queryset'] = Region.objects.filter(name=request.user.region)
         return super(WaterBodyAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
@@ -28,11 +40,53 @@ class WaterBodyAdmin(admin.ModelAdmin):
     #     if
     list_display = ('water_type', 'name', 'region', 'description')
     list_display_links = ('water_type', 'name', )
+    # inlines = [IceCheckPostInline]
+
 
 admin.site.register(WaterBody, WaterBodyAdmin)
 
 
-# class IceCheckPostAdmin(admin.ModelAdmin):
+class IceCheckPostAdmin(LeafletGeoAdmin):
+    settings_overrides = {
+        'DEFAULT_CENTER': (55.754646, 37.621463),
+        'DEFAULT_ZOOM': 10,
+    }
+    fields = ('water_body', 'name', 'location')
+    list_select_related = ('water_body',)
+
+    # def formfield_for_foreignkey(self, db_field, request, **kwargs):
+    #     if db_field.name == 'water_body':
+    #         obj_id = int(request.path.split('/')[4])
+    #         obj = IceCheckPost.objects.get(pk=obj_id)
+    #         self.set_map_center(obj)
+    #     return super(IceCheckPostAdmin, self).formfield_for_foreignkey(
+    #         db_field, request, **kwargs
+    #     )
+
+    def get_fields(self, request, obj):
+        map_center = ''
+        if obj:
+            map_center = obj.water_body.region.map_center
+        else:
+            user = get_current_user()
+            current = Current()
+            if current.is_region(user):
+                map_center = current.region.map_center
+        self.set_map_center(map_center)
+        return list(IceCheckPostAdmin.fields)
+
+    def set_map_center(self, map_center):
+        # logging.error(map_center)
+        if map_center:
+            self.settings_overrides['DEFAULT_CENTER'] = (
+                map_center.y,
+                map_center.x,
+            )
+            self.settings_overrides['DEFAULT_ZOOM'] = 8
+
+
+    list_display = ('water_body', 'name', 'get_region')
+
     # def formfield_for_foreignkey(self, db_field, request, **kwargs):
     #     if db_field.name == 'water_body' and request.user.groups.filter(
     #             name='федеральный округ'
@@ -45,12 +99,25 @@ admin.site.register(WaterBody, WaterBodyAdmin)
     #     )
 
 
+admin.site.register(IceCheckPost, IceCheckPostAdmin)
 
-admin.site.register(IceCheckPost, LeafletGeoAdmin)
                     # , IceCheckPostAdmin)
 
 
 class IceThicknessAdmin(admin.ModelAdmin):
+    settings_overrides = {
+        'DEFAULT_CENTER': (55.754646, 37.621463),
+        'DEFAULT_ZOOM': 8,
+    }
+    list_display = ('ice_check_post', 'check_date', 'thick_val_min',
+                    'thick_val_max', 'thick_val_average', 'description', 'modified')
+
+    list_editable = ('ice_check_post', 'check_date', 'thick_val_min',
+                    'thick_val_max', 'thick_val_average', 'description')
+    list_display_links = None
+
+    list_select_related = ('ice_check_post',)
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'ice_check_post' and request.user.groups.filter(
                 name='федеральный округ'
