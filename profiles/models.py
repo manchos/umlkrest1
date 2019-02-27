@@ -2,6 +2,7 @@ from django.db import models
 # Create your models here.
 from django.contrib.auth.models import AbstractUser
 from regions.models import Region
+from django.utils.functional import cached_property
 # from django.contrib.auth.models import Group, User
 # from django.contrib import admin
 from extended_choices import AutoChoices
@@ -29,6 +30,7 @@ class CustomUser(AbstractUser):
         verbose_name="Регион"
     )
 
+    @cached_property
     def is_region(self):
         if self.groups.filter(name='федеральный округ').exists():
             return True

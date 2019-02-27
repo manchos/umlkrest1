@@ -21,6 +21,7 @@ def region_directory_path(instance, filename):
 def file_exists(obj):
     return obj.storage.exists(obj.name)
 
+
 class Region(MPTTModel, gismodels.Model):
     name = models.CharField(
         max_length=50,
@@ -74,8 +75,6 @@ class Region(MPTTModel, gismodels.Model):
 
         # if self.geojson_file and file_exists(self.geojson_file):
         #     self.geojson_file.open(mode='rb')
-
-
 
         if self.borders:
             regions = Region.objects.annotate(center=Centroid('borders'))

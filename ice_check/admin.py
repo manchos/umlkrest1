@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import WaterBody, IceCheckPost, IceThickness, Current
+from .models import WaterBody, IceCheckPost, IceThickness
 from regions.models import Region
 from leaflet.admin import LeafletGeoAdmin
 from profiles.models import CustomUser
@@ -10,9 +10,7 @@ from crum import get_current_user
 
 
 
-
 logging.debug('Debug Message')
-
 
 
 class IceCheckPostInline(admin.StackedInline):
@@ -28,19 +26,18 @@ class WaterBodyAdmin(admin.ModelAdmin):
     # kwargs['initial'] = request.user.id
     list_select_related = ('region',)
 
-
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name == 'region' and
-                request.user.groups.filter(name='федеральный округ').exists()):
+                request.user.is_region):
             kwargs['initial'] = request.user.region
             kwargs['queryset'] = Region.objects.filter(name=request.user.region)
-        return super(WaterBodyAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        return (
+            super(WaterBodyAdmin, self)
+            .formfield_for_foreignkey(db_field, request, **kwargs)
+        )
 
-    # def get_region(self, request, ):
-    #     if
     list_display = ('water_type', 'name', 'region', 'description')
     list_display_links = ('water_type', 'name', )
-    # inlines = [IceCheckPostInline]
 
 
 admin.site.register(WaterBody, WaterBodyAdmin)
@@ -69,9 +66,8 @@ class IceCheckPostAdmin(LeafletGeoAdmin):
             map_center = obj.water_body.region.map_center
         else:
             user = get_current_user()
-            current = Current()
-            if current.is_region(user):
-                map_center = current.region.map_center
+            if user.is_region:
+                map_center = user.region.map_center
         self.set_map_center(map_center)
         return list(IceCheckPostAdmin.fields)
 
@@ -119,13 +115,13 @@ class IceThicknessAdmin(admin.ModelAdmin):
     list_select_related = ('ice_check_post',)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'ice_check_post' and request.user.groups.filter(
-                name='федеральный округ'
-        ).exists():
+        if db_field.name == 'ice_check_post' and request.user.is_region:
             kwargs['queryset'] = IceCheckPost.objects.filter(
-                water_body__region=request.user.region
+                water_body__region_id=request.user.region_id
             )
-        return super(IceThicknessAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        return super(IceThicknessAdmin, self).formfield_for_foreignkey(
+            db_field, request, **kwargs
+        )
 
 
 admin.site.register(IceThickness, IceThicknessAdmin)

@@ -25,7 +25,9 @@ urlpatterns = [
     url(r'^__debug__/', include(debug_toolbar.urls)),
     url(r'^', include('rd90.urls')),
     path('admin/', admin.site.urls),
-    path('', include('geobjects.urls')),
+    path('poo/', include('geobjects.urls')),
+    path('', include('regions.urls')),
+
 ]
 
 

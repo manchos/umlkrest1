@@ -1,6 +1,7 @@
 from django.db import models
 from crum import get_current_user
 from profiles.models import CustomUser
+from django.utils.functional import cached_property
 
 # Create your models here.
 
@@ -33,3 +34,21 @@ class TimeStampedModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class RegionManager(models.Manager):
+
+    @cached_property
+    def get_region(self):
+        user = get_current_user()
+        if user.is_region():
+            return user.region
+        else:
+            return None
+
+
+# class Regionable(models.Model):
+#     slug = models.SlugField()
+#
+#     class Meta:
+#         abstract = True

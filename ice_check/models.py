@@ -33,7 +33,8 @@ class Current(object):
         if self.region_user:
             return True
         else:
-            if user.groups.filter(name='федеральный округ').exists():
+            if (user is not None and
+                    user.groups.filter(name='федеральный округ').exists()):
                 self.region_user = CustomUser.objects.get(pk=user.id)
                 self.region = self.region_user.region
                 return True
@@ -43,13 +44,15 @@ class Current(object):
 current = Current()
 
 
-class RegionManager(models.Manager):
+class WaterBodyManager(models.Manager):
+
     def get_queryset(self):
-        # user = get_current_user()
+        user = get_current_user()
         # if Current.region:
-        if current.is_region(user=get_current_user()):
+        logging.error(dir(self.user))
+        if self.user.is_region():
             return super().get_queryset().filter(
-                region=current.region
+                region=self.user.region
             ).select_related('region')
         else:
             return super().get_queryset()
@@ -74,7 +77,7 @@ class WaterBody(models.Model):
         verbose_name='Тип водоема',
     )
 
-    objects = RegionManager()
+    # objects = WaterBodyManager()
 
     class Meta:
         db_table = 'water_bodies'
@@ -91,19 +94,19 @@ class PostRegionManager(models.Manager):
 
     def get_queryset(self):
         user = get_current_user()
-        if user.groups and user.groups.filter(name='федеральный округ').exists():
-            custom_user = CustomUser.objects.get(pk=user.id)
-
-            return super().get_queryset().filter(
-                water_body__region=custom_user.region
-            ).select_related('water_body').select_related('water_body__region')
+        if user.is_region:
+            return (
+                super().get_queryset().filter(
+                    water_body__region_id=user.region_id
+                ).select_related('water_body')
+                .select_related('water_body__region')
+            )
         else:
             return (
                 super().get_queryset()
                 .select_related('water_body')
                 .select_related('water_body__region')
             )
-
 
 
 class IceCheckPost(gismodels.Model):
@@ -133,7 +136,7 @@ class IceCheckPost(gismodels.Model):
         return self.water_body.region
 
     def __str__(self):
-        return '{}, {}'.format(self.water_body, self.name)
+        return '{}, {}'.format(self.water_body.name, self.name)
 
     class Meta:
         db_table = 'ice_check_posts'
@@ -143,12 +146,21 @@ class IceCheckPost(gismodels.Model):
 
 class IceThicknessManager(models.Manager):
     def get_queryset(self):
-        if current.is_region(user=get_current_user()):
-            return super().get_queryset().filter(
-                ice_check_post__water_body__region=current.region
+        user = get_current_user()
+
+        if user.is_region:
+            return (
+                super().get_queryset().filter(
+                    ice_check_post__water_body__region_id=user.region_id
+                ).select_related('ice_check_post')
+                .select_related('ice_check_post__water_body')
             )
         else:
-            return super().get_queryset()
+            return (
+                super().get_queryset()
+                .select_related('ice_check_post__water_body')
+                .select_related('water_body')
+            )
 
 
 class IceThickness(TimeStampedModel):
@@ -196,7 +208,7 @@ class IceThickness(TimeStampedModel):
         default='',
     )
 
-
+    objects = IceThicknessManager()
 
     def __str__(self):
         return '{}: {}-{} см., преобладает: {} см. {}'.format(
