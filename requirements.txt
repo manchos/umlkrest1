@@ -9,7 +9,7 @@ chardet==3.0.4
 Click==7.0
 coverage==4.5.2
 decorator==4.3.0
-Django==2.1.4
+Django==2.2.10
 django-configurations==2.1
 django-cors-headers==2.4.0
 django-crum==0.7.3
