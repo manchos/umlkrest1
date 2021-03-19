@@ -21,7 +21,7 @@ django-leaflet==0.24.0
 django-model-utils==3.1.2
 django-mptt==0.9.1
 django-phonenumber-field==2.1.0
-djangorestframework==3.9.0
+djangorestframework==3.11.2
 et-xmlfile==1.0.1
 future==0.17.1
 geocoder==1.38.1
