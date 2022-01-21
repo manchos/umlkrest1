@@ -28,7 +28,7 @@ geocoder==1.38.1
 gunicorn==19.9.0
 httpie==1.0.2
 idna==2.8
-ipython==6.2.1
+ipython==7.16.3
 ipython-genutils==0.2.0
 jdcal==1.4
 jedi==0.13.2
